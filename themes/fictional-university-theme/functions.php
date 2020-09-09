@@ -1,35 +1,46 @@
 <?php
 
-// $args = NULL makes it optional and not required
-function pageBanner() {
-    if(!isset($args['title'])) {
-        $args['title'] = get_the_title();
-    }
-
-    if(!isset($args['subtitle'])) {
-        $args['subtitle'] = get_field('page_banner_subtitle');
-    }
-
-    if(!isset($args['photo'])) {
-        if(get_field('page_banner_background_image') AND !is_archive() AND !is_home()) {
-            $args['photo'] = get_field('page_banner_background_image')['sizes']['pageBanner'];
-        } else {
-            $args['photo'] = get_theme_file_uri( '/images/ocean.jpg' );
+    /// Creating a Banner Post Type for Pages and Blog posts
+    function pageBanner($argsParm = NULL)
+    {
+        $title  = get_the_title(); 
+        $subtitle  = get_field('page_banner_subtitle');
+        $bgImageSource = get_field('page_banner_background_image')['sizes']['pageBanner'] ?? get_theme_file_uri('/images/ocean.jpg'); 
+ 
+        $args = array(
+            'title' => $title, 
+            'subtitle' => $subtitle, 
+            'bgImage' => $bgImageSource 
+ 
+        ); 
+ 
+        if (!empty($argsParm))
+        {
+            $args['title']= !array_key_exists('title', $argsParm) ? $title :$argsParm['title']; 
+            $args['subtitle']= !array_key_exists('subtitle', $argsParm) ? $subtitle : $argsParm['subtitle']; 
+            $args['bgImage']= !array_key_exists('bgImage', $argsParm) ? $bgImageSource : $argsParm['bgImage']; 
+           
         }
-    }
-    ?>
+       
+ 
+?>
+        <!-- Page Banner -->
         <div class="page-banner">
-            <div class="page-banner__bg-image" style="background-image: url(<?php echo $args['photo']; ?>);"></div>
-            <div class="page-banner__content container container--narrow">
-            <!-- <?php print_r($pageBannerImage); ?> -->
-            <h1 class="page-banner__title"><?php echo $args['title']; ?></h1>
-            <div class="page-banner__intro">
-                <p><?php echo $args['subtitle']; ?></p>
-            </div>
+            <div class="page-banner__bg-image" style="background-image: url(<?php echo $args['bgImage']; ?>);"></div>
+                <div class="page-banner__content container container--narrow">
+                <h1 class="page-banner__title"><?php echo $args['title']; ?></h1>
+                <div class="page-banner__intro">
+                    <p><?php echo $args['subtitle']; ?></p>
+                </div>
+            </div>  
         </div>
-    </div>
+ 
+<?php 
+ 
+        
+    }// end pageBanner()
 
-<?php }
+
 
 function university_files()
 {
