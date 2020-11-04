@@ -10,5 +10,20 @@ function universityRegisterSearch() {
 }
 
 function universitySearchResults() {
-  return 'Congratulations, you created a route.';
+  $professors = new WP_Query([
+      'post_type' => 'professor'
+  ]);
+  
+  // populating an array with only the data we want
+  $professorResults = [];
+
+  while( $professors->have_posts()) {
+    $professors->the_post();
+    array_push( $professorResults, [
+        'title' => get_the_title(),
+        'permalink' => get_the_permalink()
+    ]);
+  }
+
+  return $professorResults;
 }
